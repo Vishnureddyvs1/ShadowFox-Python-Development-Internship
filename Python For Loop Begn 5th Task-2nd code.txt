@@ -1,0 +1,17 @@
+total_jumping_jacks = 100
+set_size = 10
+completed_jacks = 0
+while completed_jacks < total_jumping_jacks:
+    completed_jacks += set_size
+    remaining_jacks = total_jumping_jacks - completed_jacks 
+    tired = input(f"Are you tired after completing {completed_jacks} jumping jacks? (yes/y or no/n): ").lower()
+    if tired in ['yes', 'y']:
+         skip = input("Do you want to skip the remaining sets? (yes/y or no/n):").lower()
+         if skip in ['yes', 'y']:
+             print(f"You completed a total of {completed_jacks} jumping jacks.")
+             break
+    if completed_jacks >= total_jumping_jacks:
+            print("Congratulations! You Completed the workout.")
+    else:
+            print(f"{remaining_jacks} jumping jacks remaining.")
+

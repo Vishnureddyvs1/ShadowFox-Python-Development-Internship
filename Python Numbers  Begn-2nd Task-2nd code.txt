@@ -1,0 +1,9 @@
+def pond_area_and_water(radius):
+    pi=3.14
+    area=pi*radius**2
+    water_per_sq_meter=1.4
+    total_water=int(area*water_per_sq_meter)
+    return total_water
+total_water_in_pond=pond_area_and_water(84)
+print("Total water in the pond(liters):",total_water_in_pond)
+

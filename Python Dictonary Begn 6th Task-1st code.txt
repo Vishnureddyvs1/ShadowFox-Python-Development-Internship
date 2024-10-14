@@ -1,0 +1,6 @@
+friends = ['Ramesh','Vinay','Surendra','Praveen','Altaf']
+friends_tuples = [(friend,len(friend)) for friend in friends]
+print("List of friends and their name lenghts:")
+for friend_tuple in friends_tuples:
+    print(friend_tuple)
+

@@ -1,0 +1,16 @@
+austraila = ["Sydney", "Melbourne", "Brisbane", "Perth"]
+uae  = ["Dubai","Abu Dhabi", "Sharjah", "Ajman"]
+india = ["Mumabi", "Banglore", "Chennai", "Delhi"]
+city = input("Enter a City name:")
+if city in austraila:
+    country = "Austraila"
+elif city in uae:
+    country = "UAE"
+elif city in india:
+    country = "India"
+else:
+    country = "Unknown"
+if country != "Unknown":
+    print(f"{city} is in {country}")
+else:
+    print(f"{city} does not match any country in our list")

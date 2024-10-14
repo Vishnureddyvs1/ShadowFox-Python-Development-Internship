@@ -1,0 +1,125 @@
+class MobilePhone:
+    """
+    Base class representing a mobile phone with common features.
+    """
+    def __init__(self, screen_type: str = "Touch Screen", 
+                 network_type: str = "4G/5G", 
+                 dual_sim: bool = False, 
+                 front_camera: str = "12MP", 
+                 rear_camera: str = "48MP", 
+                 ram: str = "4GB", 
+                 storage: str = "64GB",
+                 battery_capacity: int = 4000,  
+                 charging_speed: int = 25,     
+                 operating_system: str = "Generic OS", 
+                 price: float = 999.99):
+        """
+        Initialize the MobilePhone with common properties.
+        """
+        self.screen_type = screen_type
+        self.network_type = network_type
+        self.dual_sim = dual_sim
+        self.front_camera = front_camera
+        self.rear_camera = rear_camera
+        self.ram = ram
+        self.storage = storage
+        self.battery_capacity = battery_capacity
+        self.charging_speed = charging_speed
+        self.operating_system = operating_system
+        self.price = price
+    def make_call(self, number: str) -> None:
+        """
+        Simulate making a call to the given number.
+        """
+        print(f"Calling {number} from {self.operating_system} phone...")
+    def receive_call(self, caller: str) -> None:
+        """
+        Simulate receiving a call from the given caller.
+        """
+        print(f"Receiving a call from {caller} on {self.operating_system} phone...")
+    def take_a_picture(self, camera_type: str = "rear") -> None:
+        """
+        Simulate taking a picture with either the front or rear camera.
+        """
+        if camera_type.lower() == "front":
+            print(f"Taking a picture with the {self.front_camera} front camera.")
+        else:
+            print(f"Taking a picture with the {self.rear_camera} rear camera.")
+    def phone_details(self) -> dict:
+        """
+        Return the phone's details as a dictionary.
+        """
+        return {
+            "Screen Type": self.screen_type,
+            "Network Type": self.network_type,
+            "Dual SIM": self.dual_sim,
+            "Front Camera": self.front_camera,
+            "Rear Camera": self.rear_camera,
+            "RAM": self.ram,
+            "Storage": self.storage,
+            "Battery Capacity (mAh)": self.battery_capacity,
+            "Charging Speed (Watts)": self.charging_speed,
+            "Operating System": self.operating_system,
+            "Price (USD)": f"${self.price:.2f}"
+        }
+    def __str__(self) -> str:
+        """
+        String representation of the mobile phone.
+        """
+        details = self.phone_details()
+        return "\n".join(f"{key}: {value}" for key, value in details.items())
+class Apple(MobilePhone):
+    """
+    Class representing an Apple mobile phone.
+    """
+    def __init__(self, front_camera: str = "12MP", 
+                 rear_camera: str = "48MP", 
+                 ram: str = "4GB", 
+                 storage: str = "64GB",
+                 battery_capacity: int = 3000,  
+                 charging_speed: int = 20,      
+                 price: float = 1199.99):
+        """
+        Initialize Apple phone with specific properties.
+        """
+        super().__init__(dual_sim=False, front_camera=front_camera, 
+                         rear_camera=rear_camera, ram=ram, storage=storage,
+                         battery_capacity=battery_capacity, 
+                         charging_speed=charging_speed, 
+                         operating_system="iOS", price=price)
+class Samsung(MobilePhone):
+    """
+    Class representing a Samsung mobile phone.
+    """
+    def __init__(self, dual_sim: bool = True, 
+                 front_camera: str = "16MP", 
+                 rear_camera: str = "32MP", 
+                 ram: str = "6GB", 
+                 storage: str = "128GB",
+                 battery_capacity: int = 5000,  
+                 charging_speed: int = 45,      
+                 price: float = 1099.99):
+        """
+        Initialize Samsung phone with specific properties.
+        """
+        super().__init__(dual_sim=dual_sim, front_camera=front_camera, 
+                         rear_camera=rear_camera, ram=ram, storage=storage,
+                         battery_capacity=battery_capacity, 
+                         charging_speed=charging_speed, 
+                         operating_system="Android", price=price)
+if __name__ == "__main__":
+    iphone_12 = Apple(front_camera="12MP", rear_camera="48MP", ram="4GB", storage="64GB", price=1099.99)
+    iphone_13_pro = Apple(front_camera="12MP", rear_camera="48MP", ram="6GB", storage="128GB", price=1299.99)
+    samsung_galaxy_s21 = Samsung(dual_sim=True, front_camera="16MP", rear_camera="32MP", ram="8GB", storage="256GB", price=1199.99)
+    samsung_galaxy_note = Samsung(dual_sim=False, front_camera="10MP", rear_camera="64MP", ram="12GB", storage="512GB", price=1499.99)
+    print("Apple iPhone 12 Details:\n", iphone_12)
+    print("\nApple iPhone 13 Pro Details:\n", iphone_13_pro)
+    print("\nSamsung Galaxy S21 Details:\n", samsung_galaxy_s21)
+    print("\nSamsung Galaxy Note Details:\n", samsung_galaxy_note)
+    print("\n--- Using functionalities ---")
+    iphone_12.make_call("801-972-0900")
+    samsung_galaxy_s21.receive_call("Mom")
+    iphone_13_pro.take_a_picture("front")
+    samsung_galaxy_note.take_a_picture("rear")
+ 
+

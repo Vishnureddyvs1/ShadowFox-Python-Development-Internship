@@ -1,0 +1,5 @@
+pi=22/7
+print(f"Value of pi:{pi}")
+print(f"Data type of pi:{type(pi)}")
+
+ 

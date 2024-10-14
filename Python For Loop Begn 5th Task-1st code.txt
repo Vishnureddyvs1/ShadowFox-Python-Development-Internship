@@ -1,0 +1,19 @@
+import random
+total_rolls = 20
+six_count = 0
+one_count = 0
+consecutive_six_count = 0
+previous_roll = 0
+for i in range(total_rolls):
+    roll = random.randint(1,6)
+    if roll == 6:
+        six_count += 1
+    if roll == 1:
+        one_count +=1
+    if roll == 6 and previous_roll ==6:
+        consecutive_six_count += 1
+    previous_roll = roll
+print(f"Total rolls: {total_rolls}")
+print(f"Number of 6s rolled: {six_count}")
+print(f"Number of 1s rolled: {one_count}")
+print(f"Number of consecutive 6s rolled: {consecutive_six_count}")

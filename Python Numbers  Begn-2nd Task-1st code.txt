@@ -1,0 +1,4 @@
+def format_as_octal(number):
+    return format(number,'o')
+result=format_as_octal(145)
+print("Octal representation of 145 is:",result)

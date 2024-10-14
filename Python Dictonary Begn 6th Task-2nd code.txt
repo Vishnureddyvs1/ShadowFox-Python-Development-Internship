@@ -1,0 +1,47 @@
+your_expenses = {
+    "Hotel": 1200,
+    "Food": 2000,
+    "Transportation": 5000,
+    "Attractions": 3000,
+    "Miscellaneous": 2000
+}
+partner_expenses = {
+    "Hotel": 1000,
+    "Food": 1150,
+    "Transportation": 6000,
+    "Attractions": 4000,
+    "Miscellaneous": 1500
+}
+def calculate_total(expenses):
+    return sum(expenses.values())
+def find_significant_difference(exp1, exp2):
+    max_diff = 0
+    diff_category = ""
+    for category in exp1:
+        diff = abs(exp1[category] - exp2[category])
+        if diff > max_diff:
+            max_diff = diff
+            diff_category = category
+    return diff_category, max_diff
+your_total = calculate_total(your_expenses)
+partner_total = calculate_total(partner_expenses)
+print(f"Your total expenses: ₹{your_total}")
+print(f"Partner's total expenses: ₹{partner_total}")
+if your_total > partner_total:
+    print("You spent more than your partner.")
+elif your_total < partner_total:
+    print("Your partner spent more than you.")
+else:
+    print("Both spent the same amount.")
+category, difference = find_significant_difference(your_expenses, partner_expenses)
+print(f"The category with the biggest difference is '{category}' with a difference of ₹{difference}.")
+combined_total = your_total + partner_total
+equal_share = combined_total / 2
+print(f"\nCombined total expenses: ₹{combined_total}")
+print(f"Each person's share: ₹{equal_share}")
+if your_total > equal_share:
+    print(f"You paid more. Your partner owes you ₹{your_total - equal_share}.")
+elif partner_total > equal_share:
+    print(f"Your partner paid more. You owe your partner ₹{equal_share - your_total}.")
+else:
+    print("Both of you have already paid an equal share.")

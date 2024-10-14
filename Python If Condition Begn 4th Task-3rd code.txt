@@ -1,0 +1,20 @@
+austraila = ["Sydney", "Melbourne", "Brisbane", "Perth"]
+uae  = ["Dubai","Abu Dhabi", "Sharjah", "Ajman"]
+india = ["Mumbai", "Banglore", "Chennai", "Delhi"]
+city1 = input("Enter the first city:")
+city2 = input("Enter the second city:")
+def get_country(city):
+    if city in austraila:
+        return "Australia"
+    elif city in uae:
+        return "UAE"
+    elif city in india:
+        return "India"
+    else:
+        return "Unknown"
+country1 = get_country(city1)
+country2 = get_country(city2)
+if country1 == country2 and country1 != "Unknown" :
+    print(f"Both cities are in {country1}")
+else:
+    print("They don't belong to the same country")
