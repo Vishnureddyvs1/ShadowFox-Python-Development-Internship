@@ -1,0 +1,177 @@
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+import logging
+from datetime import datetime
+import time
+import random
+from pathlib import Path
+from typing import List, Dict, Optional
+from urllib.parse import urljoin
+class GeeksForGeeksScraper:
+    def __init__(self, output_dir: str = "geeksforgeeks_data"):
+        """
+        Initialize the GeeksForGeeks scraper with output directory.
+        """
+        self.base_url = "https://www.geeksforgeeks.org"
+        self.output_dir = Path(output_dir)
+        self.output_dir.mkdir(exist_ok=True)
+        logging.basicConfig(
+            filename=self.output_dir / 'scraping.log',
+            level=logging.INFO,
+            format='%(asctime)s - %(levelname)s - %(message)s'
+        )
+        self.logger = logging.getLogger(__name__)
+        self.session = requests.Session()
+        self.session.headers.update({
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Referer': 'https://www.geeksforgeeks.org/'
+        })
+    def fetch_page(self, url: str, retries: int = 3) -> Optional[BeautifulSoup]:
+        """
+        Fetch and parse a webpage with retry logic.
+        """
+        for attempt in range(retries):
+            try:
+                time.sleep(random.uniform(2, 4))
+                response = self.session.get(url)
+                response.raise_for_status()
+                return BeautifulSoup(response.text, 'html.parser')
+            except requests.RequestException as e:
+                self.logger.error(f"Attempt {attempt + 1} failed for {url}: {str(e)}")
+                if attempt == retries - 1:
+                    self.logger.error(f"All attempts failed for {url}")
+                    return None
+                time.sleep(random.uniform(3, 6))
+        
+        return None
+
+    def extract_article_data(self, soup: BeautifulSoup, url: str) -> Dict:
+        """
+        Extract article data from a GeeksForGeeks article page.
+        """
+        try:
+            
+            title = soup.find('h1', class_='article-title')
+            title_text = title.text.strip() if title else "No title found"
+
+           
+            article_body = soup.find('div', class_='article-content')
+            content = ""
+            if article_body:
+                
+                for script in article_body.find_all('script'):
+                    script.decompose()
+                for ad in article_body.find_all('div', class_='advertisement'):
+                    ad.decompose()
+                content = article_body.text.strip()
+
+            
+            tags = soup.find_all('a', class_='tags-list')
+            tag_list = [tag.text.strip() for tag in tags] if tags else []
+
+            
+            author = soup.find('a', class_='author-link')
+            author_name = author.text.strip() if author else "Unknown"
+
+            
+            date = soup.find('span', class_='article-date')
+            publish_date = date.text.strip() if date else "No date found"
+
+            
+            difficulty = soup.find('span', class_='difficulty-level')
+            difficulty_level = difficulty.text.strip() if difficulty else "Not specified"
+
+            return {
+                'title': title_text,
+                'url': url,
+                'author': author_name,
+                'publish_date': publish_date,
+                'difficulty_level': difficulty_level,
+                'tags': tag_list,
+                'content': content,
+                'scraped_at': datetime.now().isoformat()
+            }
+
+        except Exception as e:
+            self.logger.error(f"Error extracting data from {url}: {str(e)}")
+            return None
+
+    def get_category_articles(self, category_url: str, limit: int = 10) -> List[str]:
+        """
+        Get article URLs from a category page.
+        """
+        article_urls = []
+        try:
+            soup = self.fetch_page(category_url)
+            if not soup:
+                return article_urls
+
+           articles = soup.find_all('a', class_='article-link')
+            for article in articles[:limit]:
+                article_url = urljoin(self.base_url, article.get('href'))
+                article_urls.append(article_url)
+
+        except Exception as e:
+            self.logger.error(f"Error getting article URLs from {category_url}: {str(e)}")
+
+        return article_urls
+
+    def save_data(self, data: List[Dict], format: str = 'csv') -> bool:
+        """
+        Save scraped data to file.
+        """
+        try:
+            if not data:
+                self.logger.warning("No data to save")
+                return False
+
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            df = pd.DataFrame(data)
+            
+            if format.lower() == 'csv':
+                output_file = self.output_dir / f'gfg_articles_{timestamp}.csv'
+                df.to_csv(output_file, index=False)
+            elif format.lower() == 'json':
+                output_file = self.output_dir / f'gfg_articles_{timestamp}.json'
+                df.to_json(output_file, orient='records', lines=True)
+            else:
+                self.logger.error(f"Unsupported format: {format}")
+                return False
+                
+            self.logger.info(f"Data saved successfully to {output_file}")
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"Error saving data: {str(e)}")
+            return False
+   def scrape_category(self, category_url: str, limit: int = 10, output_format: str = 'csv') -> None:
+        """
+        Scrape articles from a specific category.
+        """
+        self.logger.info(f"Starting to scrape category: {category_url}")
+        article_urls = self.get_category_articles(category_url, limit)
+        self.logger.info(f"Found {len(article_urls)} articles to scrape")
+        articles_data = []
+        for url in article_urls:
+            self.logger.info(f"Scraping article: {url}")
+            soup = self.fetch_page(url)
+            if soup:
+                article_data = self.extract_article_data(soup, url)
+                if article_data:
+                    articles_data.append(article_data)
+        if articles_data:
+            self.save_data(articles_data, output_format)
+            self.logger.info(f"Successfully scraped {len(articles_data)} articles")
+        else:
+            self.logger.warning("No articles were successfully scraped")
+if __name__ == "__main__":
+    scraper = GeeksForGeeksScraper()
+    categories = [
+        "https://www.geeksforgeeks.org/category/python/",
+        "https://www.geeksforgeeks.org/category/data-structures/",
+        "https://www.geeksforgeeks.org/category/algorithm/"
+    ]
+    for category in categories:
+        scraper.scrape_category(category, limit=5, output_format='csv')
